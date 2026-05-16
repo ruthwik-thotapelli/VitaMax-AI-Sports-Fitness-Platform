@@ -1,17 +1,28 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
   CheckCircle2, 
   Zap, 
   ShieldCheck, 
   Cpu, 
-  ChevronRight, 
   Activity, 
   Star,
-  Activity as ActivityIcon,
-  ArrowRight
+  ArrowRight,
+  X,
+  CreditCard,
+  Loader2
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Pricing = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  
+  // Checkout State: null | 'review' | 'processing' | 'success'
+  const [checkoutStage, setCheckoutStage] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
   const tiers = [
     {
       name: 'Rookie',
@@ -61,8 +72,24 @@ const Pricing = () => {
     }
   ];
 
+  const handleSelectPlan = (tier) => {
+    if (!user) {
+      navigate('/register');
+      return;
+    }
+    setSelectedPlan(tier);
+    setCheckoutStage('review');
+  };
+
+  const handleCheckout = () => {
+    setCheckoutStage('processing');
+    setTimeout(() => {
+      setCheckoutStage('success');
+    }, 2500);
+  };
+
   return (
-    <div className="min-h-screen bg-brand-navy font-sans selection:bg-brand-orange selection:text-white pb-32 tactical-grid">
+    <div className="min-h-screen bg-brand-navy font-sans selection:bg-brand-orange selection:text-white pb-32 tactical-grid relative">
       {/* Header */}
       <div className="pt-24 pb-40 px-6 md:px-12 relative overflow-hidden">
         <div className="max-w-[1440px] mx-auto text-center relative z-10 space-y-6">
@@ -138,6 +165,7 @@ const Pricing = () => {
                  </div>
 
                  <button 
+                   onClick={() => handleSelectPlan(tier)}
                    className={`w-full h-16 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 shadow-2xl active:scale-95 italic ${
                      tier.popular 
                      ? 'bg-brand-orange text-white shadow-orange-glow hover:brightness-110' 
@@ -174,20 +202,124 @@ const Pricing = () => {
               </div>
             ))}
          </motion.div>
-
-         {/* FAQ Hook */}
-         <div className="mt-32 bg-brand-navy-light rounded-[3rem] p-12 md:p-20 flex flex-col md:flex-row justify-between items-center gap-12 border border-white/5 shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-[400px] h-full bg-brand-orange/5 blur-[100px] pointer-events-none" />
-            
-            <div className="space-y-6 flex-1 text-center md:text-left relative z-10">
-               <h3 className="text-4xl font-black text-white uppercase tracking-tighter italic leading-none">Still have questions?</h3>
-               <p className="text-gray-500 text-base font-bold uppercase tracking-wide max-w-lg mx-auto md:mx-0">Our Performance Intelligence team is available 24/7 to help you choose the right protocol.</p>
-            </div>
-            <button className="h-14 px-10 bg-white/5 border border-white/10 text-white font-bold text-[11px] uppercase tracking-widest rounded-xl hover:bg-white hover:text-brand-navy transition-all shadow-2xl active:scale-95 italic relative z-10">
-               Chat with Support
-            </button>
-         </div>
       </div>
+
+      {/* Checkout Modal Overlay */}
+      <AnimatePresence>
+        {checkoutStage && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-brand-navy/90 backdrop-blur-xl"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="w-full max-w-xl bg-brand-navy-light rounded-[2.5rem] border border-white/10 shadow-2xl relative overflow-hidden"
+            >
+              {checkoutStage !== 'success' && checkoutStage !== 'processing' && (
+                <button 
+                  onClick={() => setCheckoutStage(null)}
+                  className="absolute top-6 right-6 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-colors z-10"
+                >
+                  <X size={18} />
+                </button>
+              )}
+
+              {/* Top Banner based on Tier */}
+              <div className="h-2 bg-gradient-to-r from-transparent via-brand-orange to-transparent opacity-50" style={{ backgroundImage: `linear-gradient(to right, transparent, ${selectedPlan?.color}, transparent)` }} />
+
+              <div className="p-10 md:p-14">
+                 {/* 1. Review Stage */}
+                 {checkoutStage === 'review' && (
+                   <div className="space-y-10">
+                     <div>
+                       <h3 className="text-3xl font-black text-white italic uppercase tracking-tighter mb-2">Upgrade Protocol</h3>
+                       <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">Verify your selected tier below</p>
+                     </div>
+
+                     <div className="bg-black/30 rounded-3xl p-6 border border-white/5 space-y-6">
+                        <div className="flex justify-between items-center pb-6 border-b border-white/10">
+                           <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
+                                 <Star size={20} style={{ color: selectedPlan.color }} />
+                              </div>
+                              <div>
+                                 <p className="text-sm font-black text-white italic uppercase">{selectedPlan.name}</p>
+                                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Billed Monthly</p>
+                              </div>
+                           </div>
+                           <div className="text-right">
+                              <p className="text-2xl font-black text-white italic">${selectedPlan.price}</p>
+                           </div>
+                        </div>
+
+                        <div className="space-y-4">
+                           {selectedPlan.features.slice(0, 3).map((feat, i) => (
+                             <div key={i} className="flex items-center gap-3">
+                                <CheckCircle2 size={14} style={{ color: selectedPlan.color }} />
+                                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">{feat}</span>
+                             </div>
+                           ))}
+                           <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest italic pt-2">+ All other tier features included.</p>
+                        </div>
+                     </div>
+
+                     <button 
+                       onClick={handleCheckout}
+                       className="w-full h-14 bg-brand-orange text-white rounded-xl font-black text-[11px] uppercase tracking-widest transition-all hover:brightness-110 active:scale-95 shadow-orange-glow flex items-center justify-center gap-3 italic"
+                       style={{ backgroundColor: selectedPlan.price === '0' ? '#64748b' : selectedPlan.price === '99' ? '#D7FF00' : '#FF5F04', color: selectedPlan.price === '99' ? '#0F172A' : '#fff' }}
+                     >
+                       <CreditCard size={16} /> 
+                       {selectedPlan.price === '0' ? 'ACTIVATE FREE ACCOUNT' : 'CONFIRM & PAY'}
+                     </button>
+                   </div>
+                 )}
+
+                 {/* 2. Processing Stage */}
+                 {checkoutStage === 'processing' && (
+                   <div className="text-center py-10 space-y-8">
+                     <div className="w-24 h-24 bg-brand-orange/10 rounded-full flex items-center justify-center mx-auto text-brand-orange border border-brand-orange/20 relative">
+                        <div className="absolute inset-0 border-2 border-brand-orange border-t-transparent rounded-full animate-spin" />
+                        <Loader2 size={32} className="animate-pulse" />
+                     </div>
+                     <div>
+                       <h3 className="text-2xl font-black text-white italic uppercase tracking-tighter mb-3">Syncing Credentials...</h3>
+                       <p className="text-gray-500 text-[11px] font-bold uppercase tracking-widest">Encrypting payment matrix & activating protocols.</p>
+                     </div>
+                   </div>
+                 )}
+
+                 {/* 3. Success Stage */}
+                 {checkoutStage === 'success' && (
+                   <div className="text-center py-6 space-y-8">
+                     <div className="w-24 h-24 bg-brand-lime/10 rounded-full flex items-center justify-center mx-auto text-brand-lime border border-brand-lime/20 shadow-[0_0_40px_rgba(215,255,0,0.2)]">
+                        <ShieldCheck size={40} />
+                     </div>
+                     <div>
+                       <h3 className="text-4xl font-black text-white italic uppercase tracking-tighter mb-4 leading-none">Protocol <span className="text-brand-lime">Active</span></h3>
+                       <p className="text-gray-400 text-xs font-bold uppercase tracking-widest leading-relaxed max-w-[280px] mx-auto">
+                         Your account has been upgraded to {selectedPlan.name}. All systems are fully operational.
+                       </p>
+                     </div>
+                     <button 
+                       onClick={() => {
+                         setCheckoutStage(null);
+                         navigate('/overview');
+                       }}
+                       className="w-full h-14 bg-white/5 border border-white/10 text-white rounded-xl font-black text-[11px] uppercase tracking-widest transition-all hover:bg-brand-lime hover:text-brand-navy hover:border-brand-lime active:scale-95 flex items-center justify-center gap-3 italic mt-4"
+                     >
+                       INITIALIZE DASHBOARD <ArrowRight size={16} />
+                     </button>
+                   </div>
+                 )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

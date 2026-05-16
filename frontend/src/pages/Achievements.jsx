@@ -13,12 +13,14 @@ import {
   Crown,
   TrendingUp,
   Activity,
-  ArrowUpRight
+  ArrowUpRight,
+  ShieldAlert
 } from 'lucide-react';
 
 const Achievements = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchGamification();
@@ -30,17 +32,30 @@ const Achievements = () => {
       setData(data);
     } catch (err) {
       console.error(err);
+      setError('Neural link synchronization failed. Protocol reset recommended.');
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading || !data) return (
+  if (loading) return (
     <div className="flex flex-col h-[60vh] items-center justify-center gap-6">
        <div className="w-12 h-12 border-4 border-brand-orange/20 border-t-brand-orange rounded-full animate-spin" />
        <p className="text-[10px] font-bold uppercase text-gray-500 tracking-[0.3em] italic">Synchronizing Rank...</p>
     </div>
   );
+
+  if (error) return (
+    <div className="flex flex-col h-[60vh] items-center justify-center gap-6">
+       <div className="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center text-red-500 border border-red-500/20">
+          <ShieldAlert size={24} />
+       </div>
+       <p className="text-[10px] font-bold uppercase text-red-500 tracking-[0.3em] italic">{error}</p>
+       <button onClick={() => window.location.reload()} className="px-6 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-[9px] font-bold uppercase tracking-widest text-white transition-all">Re-sync Engine</button>
+    </div>
+  );
+
+  if (!data) return null;
 
   return (
     <div className="space-y-10 pb-20">

@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/oauth/simulate', [AuthController::class, 'simulateOAuth']); // Keep for backward compatibility if needed
+Route::get('/oauth/{provider}', [AuthController::class, 'redirectToProvider']);
+Route::get('/oauth/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);

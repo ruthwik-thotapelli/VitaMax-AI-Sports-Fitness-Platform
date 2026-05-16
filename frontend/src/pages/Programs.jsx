@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { 
   Search, 
   ChevronRight, 
@@ -10,15 +11,23 @@ import {
   Flame, 
   Clock, 
   TrendingUp,
-  Star
+  Star,
+  ArrowRight
 } from 'lucide-react';
 import { CATEGORIES } from '../data/mockData';
 import ProgramDetailModal from '../components/ProgramDetailModal';
 
 const Programs = () => {
-  const [activeCategory, setActiveCategory] = useState('All');
+  const location = useLocation();
+  const [activeCategory, setActiveCategory] = useState(location.state?.category || 'All');
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.category) {
+      setActiveCategory(location.state.category);
+    }
+  }, [location.state]);
 
   const categories = ['All', 'Strength', 'Cardio', 'Mobility', 'Endurance', 'Mindfulness'];
 

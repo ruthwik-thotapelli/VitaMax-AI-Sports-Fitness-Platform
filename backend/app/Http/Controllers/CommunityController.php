@@ -7,12 +7,18 @@ use Illuminate\Http\Request;
 
 class CommunityController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Post::with(['user:id,name', 'comments.user:id,name'])
+        $posts = Post::with(['user:id,name', 'comments.user:id,name'])
             ->withCount('likes')
             ->latest()
             ->get();
+
+        $posts->each(function ($post) use ($request) {
+            $post->liked = $post->likes()->where('user_id', $request->user()->id)->exists();
+        });
+
+        return $posts;
     }
 
     public function store(Request $request)

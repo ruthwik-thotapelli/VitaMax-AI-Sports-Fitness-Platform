@@ -5,8 +5,8 @@ export const HERO_BANNERS = [
     subtitle: "AI POWERED",
     category: "AI POWERED",
     description: "Smart workouts. Personalized nutrition. 6-week transformation program.",
-    image: "https://images.unsplash.com/photo-1574680096145-d05b474e2155?q=80&w=2069&auto=format&fit=crop",
-    color: "#2E5BFF",
+    image: "https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&w=1600&v=2",
+    color: "#FF5F04",
     cta: "Start Muscle Plan",
     features: [
       { label: "AI Workouts", sub: "Personalized", icon: "Activity" },
@@ -14,7 +14,7 @@ export const HERO_BANNERS = [
       { label: "Track Progress", sub: "In Real-Time", icon: "TrendingUp" }
     ],
     cardFeatures: ["Smart AI Workouts", "Protein Plan Included", "6-Week Transformation"],
-    stats: { weeks: "6-8", kcal: "350-500", level: "Intermediate" }
+    stats: { weeks: "6", kcal: "350-500", level: "Intermediate" }
   },
   {
     id: 2,
@@ -22,7 +22,7 @@ export const HERO_BANNERS = [
     subtitle: "FAT BURN",
     category: "FAT BURN",
     description: "High-intensity cardio combined with science-backed nutrition for rapid fat loss.",
-    image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1600&q=75&v=2",
     color: "#D7FF00",
     cta: "Join Fat Burn",
     features: [
@@ -31,7 +31,7 @@ export const HERO_BANNERS = [
       { label: "Smart Recovery", sub: "AI Guided", icon: "Zap" }
     ],
     cardFeatures: ["HIIT + Cardio System", "Daily Calorie Tracking", "Smart Recovery Tips"],
-    stats: { weeks: "4-6", kcal: "600-800", level: "Beginner" }
+    stats: { weeks: "4", kcal: "600-800", level: "Beginner" }
   },
   {
     id: 3,
@@ -39,7 +39,7 @@ export const HERO_BANNERS = [
     subtitle: "NUTRITION",
     category: "NUTRITION",
     description: "Personalized diet planning calibrated to your unique metabolic fingerprint.",
-    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2070&auto=format&fit=crop",
+    image: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&w=1600&v=2",
     color: "#9D50FF",
     cta: "View Diet Plan",
     features: [
@@ -56,7 +56,7 @@ export const HERO_BANNERS = [
     subtitle: "PERFORMANCE",
     category: "SPORTS",
     description: "Elite conditioning protocols used by world-class athletes and pro sports teams.",
-    image: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?q=80&w=2070&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=1600&q=75&v=2",
     color: "#2E5BFF",
     cta: "Train Like Pro",
     features: [
@@ -65,7 +65,7 @@ export const HERO_BANNERS = [
       { label: "Trainer Drills", sub: "Guided", icon: "Target" }
     ],
     cardFeatures: ["Speed, Stamina, Agility", "Performance Analytics", "Trainer-Guided Drills"],
-    stats: { weeks: "8-12", kcal: "400-600", level: "Advanced" }
+    stats: { weeks: "8", kcal: "400-600", level: "Advanced" }
   },
   {
     id: 5,
@@ -73,7 +73,7 @@ export const HERO_BANNERS = [
     subtitle: "RECOVERY",
     category: "RECOVERY",
     description: "Complete regeneration system combining mobility, sleep science, and injury prevention.",
-    image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2020&auto=format&fit=crop",
+    image: "https://images.pexels.com/photos/3757942/pexels-photo-3757942.jpeg?auto=compress&w=1600&v=2",
     color: "#FFB800",
     cta: "Start Recovery",
     features: [
@@ -82,7 +82,7 @@ export const HERO_BANNERS = [
       { label: "Injury Prevention", sub: "Science", icon: "Target" }
     ],
     cardFeatures: ["Stretching & Mobility", "Sleep & Hydration", "Injury Prevention"],
-    stats: { weeks: "4-6", kcal: "200-300", level: "All Levels" }
+    stats: { weeks: "4", kcal: "200-300", level: "All Levels" }
   }
 ];
 
@@ -91,11 +91,16 @@ export const CATEGORIES = [
     id: 1,
     title: "Top Programs For You",
     data: [
-      { id: 101, title: "Beast Mode Training", category: "STRENGTH", image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop", rating: 4.5, duration: "6 Weeks", level: "Intermediate", color: "#FF5F04" },
-      { id: 102, title: "AI Muscle Builder", category: "MUSCLE GAIN", image: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=1200&auto=format&fit=crop", rating: 4.9, duration: "8 Weeks", level: "Intermediate", color: "#FF5F04" },
-      { id: 103, title: "Elite Fat Burn", category: "FAT BURN", image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&auto=format&fit=crop", rating: 4.8, duration: "4 Weeks", level: "Beginner", color: "#D7FF00" },
-      { id: 104, title: "Strength & Power", category: "SPORTS", image: "https://images.unsplash.com/photo-1517963879433-6ad2b056d712?q=80&w=1200&auto=format&fit=crop", rating: 4.9, duration: "6 Weeks", level: "Advanced", color: "#2E5BFF" },
-      { id: 105, title: "Core & Abs Mastery", category: "CORE", image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop", rating: 4.9, duration: "5 Weeks", level: "All Levels", color: "#9D50FF" }
+      { id: 101, title: "Beast Mode Training", category: "Strength", image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1000&q=75", rating: 4.8, duration: "6 Weeks", level: "Intermediate", color: "#FF5F04" },
+      { id: 102, title: "AI Muscle Builder", category: "Strength", image: "https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&w=1000", rating: 4.9, duration: "8 Weeks", level: "Advanced", color: "#FF5F04" },
+      { id: 103, title: "Elite Fat Burn", category: "Cardio", image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1000&q=75", rating: 4.8, duration: "4 Weeks", level: "Beginner", color: "#D7FF00" },
+      { id: 104, title: "Neural HIIT Engine", category: "Cardio", image: "https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=1000&q=75", rating: 4.7, duration: "4 Weeks", level: "Intermediate", color: "#2E5BFF" },
+      { id: 105, title: "Pro Conditioning Matrix", category: "Endurance", image: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=1000&q=75", rating: 4.9, duration: "12 Weeks", level: "Elite", color: "#2E5BFF" },
+      { id: 106, title: "Marathon Blueprint", category: "Endurance", image: "https://images.pexels.com/photos/2261145/pexels-photo-2261145.jpeg?auto=compress&w=1000", rating: 4.6, duration: "16 Weeks", level: "Advanced", color: "#FF5F04" },
+      { id: 107, title: "Joint Armor Protocol", category: "Mobility", image: "https://images.pexels.com/photos/3757942/pexels-photo-3757942.jpeg?auto=compress&w=1000", rating: 4.9, duration: "3 Weeks", level: "All Levels", color: "#FFB800" },
+      { id: 108, title: "Dynamic Flow Systems", category: "Mobility", image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1000&q=75", rating: 4.5, duration: "4 Weeks", level: "Beginner", color: "#9D50FF" },
+      { id: 109, title: "Zen Mastery", category: "Mindfulness", image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1000&q=75", rating: 4.8, duration: "2 Weeks", level: "All Levels", color: "#9D50FF" },
+      { id: 110, title: "Recovery & Breathwork", category: "Mindfulness", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1000&q=75", rating: 4.7, duration: "4 Weeks", level: "All Levels", color: "#2E5BFF" }
     ]
   }
 ];

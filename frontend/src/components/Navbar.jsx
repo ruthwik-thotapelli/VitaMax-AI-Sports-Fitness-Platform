@@ -13,10 +13,12 @@ import {
   TrendingUp,
   Target
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
-const Navbar = () => {
+const Navbar = ({ light = false }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const [activeDropdown, setActiveDropdown] = useState(null);
 
   const navItems = [
@@ -24,39 +26,44 @@ const Navbar = () => {
       label: 'Programs', 
       path: '/programs',
       dropdown: [
-        { title: 'Strength Matrix', desc: 'Elite muscle building protocols', icon: Dumbbell, color: 'text-brand-orange' },
-        { title: 'Neural Fat Burn', desc: 'Metabolic optimization', icon: Zap, color: 'text-brand-blue' },
-        { title: 'Pro Conditioning', desc: 'Elite athlete systems', icon: Activity, color: 'text-brand-lime' }
+        { title: 'Strength Matrix', category: 'Strength', desc: 'Elite muscle building protocols', icon: Dumbbell, color: 'text-brand-orange' },
+        { title: 'Neural Fat Burn', category: 'Cardio', desc: 'Metabolic optimization', icon: Zap, color: 'text-brand-blue' },
+        { title: 'Pro Conditioning', category: 'Endurance', desc: 'Elite athlete systems', icon: Activity, color: 'text-brand-lime' }
       ]
     },
     { 
       label: 'Nutrition', 
       path: '/nutrition',
       dropdown: [
-        { title: 'BioSync Diet', desc: 'Metabolic precision tracking', icon: Apple, color: 'text-brand-lime' },
-        { title: 'Macro Guard', desc: 'AI-powered intake analysis', icon: Target, color: 'text-brand-orange' },
-        { title: 'Supplement AI', desc: 'Neural stacking advisor', icon: Zap, color: 'text-brand-blue' }
+        { title: 'BioSync Diet', category: 'BioSync Diet', desc: 'Metabolic precision tracking', icon: Apple, color: 'text-brand-lime' },
+        { title: 'Macro Guard', category: 'Macro Guard', desc: 'AI-powered intake analysis', icon: Target, color: 'text-brand-orange' },
+        { title: 'Supplement AI', category: 'Supplement AI', desc: 'Neural stacking advisor', icon: Zap, color: 'text-brand-blue' }
       ]
     },
     { 
       label: 'Community', 
       path: '/community',
       dropdown: [
-        { title: 'Global Arena', desc: 'Connect with elite athletes', icon: Users, color: 'text-brand-blue' },
-        { title: 'Live Sessions', desc: 'Neural feedback coaching', icon: Activity, color: 'text-brand-lime' }
+        { title: 'Global Arena', category: 'Global Arena', desc: 'Connect with elite athletes', icon: Users, color: 'text-brand-blue' },
+        { title: 'Live Sessions', category: 'Live Sessions', desc: 'Neural feedback coaching', icon: Activity, color: 'text-brand-lime' }
       ]
     },
     { label: 'Challenges', path: '/challenges' },
     { label: 'Pricing', path: '/pricing' }
   ];
 
-  const handleNavClick = (path) => {
-    navigate(path);
+  const handleNavClick = (path, category = null) => {
+    if (!user) {
+      navigate('/register');
+      setActiveDropdown(null);
+      return;
+    }
+    navigate(path, { state: { category } });
     setActiveDropdown(null);
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] bg-black/40 backdrop-blur-3xl border-b border-white/5 px-6 md:px-12 h-20 flex items-center justify-between shadow-2xl">
+    <nav className={`fixed top-0 left-0 right-0 z-[100] ${light ? 'bg-white/95 text-brand-navy shadow-sm border-b border-gray-100' : 'bg-black/40 text-white backdrop-blur-3xl border-b border-white/5'} px-6 md:px-12 h-20 flex items-center justify-between transition-all duration-500`}>
       {/* Brand */}
       <div 
         className="flex items-center gap-3 cursor-pointer group" 
@@ -65,7 +72,7 @@ const Navbar = () => {
         <div className="w-10 h-10 bg-brand-orange rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-orange/20 group-hover:rotate-6 transition-all duration-500">
           <Activity size={22} strokeWidth={3} />
         </div>
-        <span className="text-xl font-black tracking-tighter uppercase italic text-white">
+        <span className={`text-xl font-black tracking-tighter uppercase italic ${light ? 'text-brand-navy' : 'text-white'}`}>
           VITAMAX<span className="text-brand-orange">.</span>
         </span>
       </div>
@@ -80,10 +87,10 @@ const Navbar = () => {
             onMouseLeave={() => setActiveDropdown(null)}
           >
             <div 
-              className={`flex items-center gap-2 cursor-pointer group/link px-5 py-2 rounded-xl transition-all duration-300 ${location.pathname === item.path ? 'text-brand-orange bg-white/5' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+              className={`flex items-center gap-2 cursor-pointer group/link px-5 py-2 rounded-xl transition-all duration-300 ${location.pathname === item.path ? 'text-brand-orange' : (light ? 'text-gray-600 hover:text-brand-navy hover:bg-gray-50' : 'text-gray-400 hover:text-white hover:bg-white/5')}`}
               onClick={() => handleNavClick(item.path)}
             >
-              <span className="text-[10px] font-bold uppercase tracking-widest italic">
+              <span className="text-[11px] font-black uppercase tracking-[0.15em] italic">
                 {item.label}
               </span>
               {item.dropdown && (
@@ -105,7 +112,10 @@ const Navbar = () => {
                       <div 
                         key={drop.title}
                         className="group/item flex items-center gap-4 p-4 rounded-2xl hover:bg-white/5 transition-all cursor-pointer"
-                        onClick={() => handleNavClick(item.path)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleNavClick(item.path, drop.category);
+                        }}
                       >
                         <div className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center ${drop.color} group-hover/item:scale-110 group-hover/item:bg-white/10 transition-all duration-500 border border-white/5`}>
                           <drop.icon size={18} />
@@ -127,14 +137,9 @@ const Navbar = () => {
 
       {/* Actions */}
       <div className="flex items-center gap-6">
-        <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-brand-blue/10 rounded-full border border-brand-blue/20 group cursor-default">
-          <Zap size={12} className="text-brand-blue group-hover:animate-pulse" />
-          <span className="text-[9px] font-bold uppercase tracking-widest text-brand-blue">Live Status</span>
-          <div className="w-1 h-1 bg-brand-blue rounded-full animate-ping" />
-        </div>
         <button 
           onClick={() => navigate('/login')}
-          className="h-10 px-6 bg-brand-orange text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-orange-glow hover:brightness-110 transition-all active:scale-95 italic"
+          className="h-12 px-8 bg-brand-orange text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-orange-glow hover:brightness-110 transition-all active:scale-95 italic"
         >
           Access Portal
         </button>

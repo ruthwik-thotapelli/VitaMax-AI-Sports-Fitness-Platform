@@ -35,7 +35,7 @@ const HeroSlider = ({ banners, onProgramClick }) => {
         speed={1000}
         navigation={{ nextEl: '.hero-next', prevEl: '.hero-prev' }}
         pagination={{ clickable: true, el: '.hero-pagination' }}
-        autoplay={{ delay: 6000 }}
+        autoplay={{ delay: 3000 }}
         loop={true}
         className="h-[500px] md:h-[620px] w-full"
       >
@@ -43,11 +43,15 @@ const HeroSlider = ({ banners, onProgramClick }) => {
           <SwiperSlide key={banner.id} className="bg-[#0b111b]">
             <div className="relative w-full h-full flex items-center">
               {/* Full-bleed image with proper masking */}
-              <div className="absolute inset-0 z-0">
+              <div className="absolute inset-0 z-0 bg-[#0b111b]">
                 <img 
                   src={banner.image} 
-                  className="w-full h-full object-cover object-[center_20%] opacity-80"
+                  className="w-full h-full object-cover object-[center_20%] opacity-100 transition-opacity duration-1000"
                   alt={banner.title} 
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.parentElement.style.backgroundColor = '#0b111b';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#0b111b] via-[#0b111b]/70 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0b111b]/50 to-transparent" />
@@ -62,9 +66,9 @@ const HeroSlider = ({ banners, onProgramClick }) => {
                   {banner.subtitle}
                 </span>
                 
-                <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white uppercase leading-[0.9]">
+                <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-white uppercase leading-[0.85]">
                   {banner.title.split(' ').slice(0, -1).join(' ')} <br/>
-                  <span style={{ color: banner.color }} className="italic">
+                  <span style={{ color: banner.color }}>
                     {banner.title.split(' ').slice(-1)[0]}
                   </span>
                 </h1>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -17,6 +17,9 @@ import CommandCenter from './pages/CommandCenter'
 import Programs from './pages/Programs'
 import Challenges from './pages/Challenges'
 import Pricing from './pages/Pricing'
+import AdminDashboard from './pages/AdminDashboard'
+import AdminLogin from './pages/AdminLogin'
+import AdminRegister from './pages/AdminRegister'
 import AIChatbot from './components/AIChatbot'
 import Navbar from './components/Navbar'
 import { 
@@ -70,6 +73,9 @@ const Dashboard = ({ initialTab = 'command' }) => {
     { id: 'community', icon: Users, label: 'Lounge' },
   ];
 
+  // Always show Admin Core link for testing/visibility, but it routes based on access
+  menuItems.push({ id: 'admin', icon: ShieldCheck, label: 'Admin Core', path: user?.role === 'admin' ? '/admin' : '/admin/login' });
+
   return (
     <div className="flex min-h-screen bg-brand-navy text-white overflow-hidden font-sans tactical-grid">
       {/* Sidebar */}
@@ -93,7 +99,13 @@ const Dashboard = ({ initialTab = 'command' }) => {
           {menuItems.map((item) => (
             <button type="button"
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => {
+                if (item.path) {
+                  window.location.href = item.path; // Or use navigate if we pass it to Dashboard
+                } else {
+                  setActiveTab(item.id);
+                }
+              }}
               className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group relative ${
                 activeTab === item.id 
                 ? 'bg-brand-orange text-white' 
@@ -203,6 +215,7 @@ const Dashboard = ({ initialTab = 'command' }) => {
 
 function App() {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   return (
     <AnimatePresence mode="wait">
@@ -217,11 +230,16 @@ function App() {
         </div>
       ) : (
         <div className="min-h-screen bg-brand-navy tactical-grid">
-          {!['/login', '/register'].includes(location.pathname) && <Navbar />}
-          <div className={!['/login', '/register'].includes(location.pathname) ? "pt-24" : ""}>
+          {!['/login', '/register', '/admin/login', '/admin/register'].includes(location.pathname) && <Navbar light={!user && location.pathname === '/'} />}
+          <div className={!['/login', '/register', '/admin/login', '/admin/register'].includes(location.pathname) ? "pt-24" : ""}>
             <Routes>
             <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
             <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={user?.role === 'admin' ? <Navigate to="/admin" /> : <AdminLogin />} />
+            <Route path="/admin/register" element={user?.role === 'admin' ? <Navigate to="/admin" /> : <AdminRegister />} />
+            <Route path="/admin" element={user?.role === 'admin' ? <AdminDashboard /> : <Navigate to="/admin/login" />} />
             <Route path="/programs" element={<Programs />} />
             <Route path="/nutrition" element={<Nutrition />} />
             <Route path="/community" element={<Community />} />

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { Link, useNavigate } from 'react-router-dom'; 
@@ -7,7 +7,7 @@ import {
   Activity, Search, ChevronRight, ChevronLeft, ChevronDown,
   Star, Zap, Flame, Medal, Trophy, Users, Target, Heart,
   ShieldCheck, Cpu, Utensils, TrendingUp, Clock, Dumbbell,
-  CheckCircle2, Play, Phone, ArrowRight
+  CheckCircle2, Play, Phone, ArrowRight, X
 } from 'lucide-react';
 import HeroSlider from '../components/ott/HeroSlider';
 import { HERO_BANNERS, CATEGORIES } from '../data/mockData';
@@ -21,38 +21,46 @@ import 'swiper/css/pagination';
 /* ─── Vertical Program Card ─── */
 const VerticalProgramCard = ({ program, onProgramClick }) => (
   <motion.div
-    whileHover={{ y: -12, scale: 1.02 }}
-    className="relative rounded-[2rem] overflow-hidden cursor-pointer flex-shrink-0 h-[540px] w-full shadow-2xl group border border-white/5"
+    whileHover={{ y: -15, scale: 1.02 }}
+    className="relative rounded-[2.5rem] overflow-hidden cursor-pointer flex-shrink-0 h-[600px] w-full shadow-2xl group border border-gray-100"
     onClick={() => onProgramClick(program)}
   >
-    <img
-      src={program.image}
-      alt={program.title}
-      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
-    />
-    <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/20 to-transparent" />
+    <div className="absolute inset-0 bg-[#0b111b]">
+      <img
+        src={program.image}
+        alt={program.title}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
+        onError={(e) => {
+          e.target.style.display = 'none';
+          e.target.parentElement.style.backgroundColor = '#0b111b';
+        }}
+      />
+    </div>
+    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
     
-    <div className="absolute inset-0 flex flex-col justify-between p-8 md:p-10">
+    <div className="absolute inset-0 flex flex-col justify-between p-10">
       <div>
         <span
-          className="inline-block px-4 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest text-white mb-6 border border-white/10 backdrop-blur-md"
-          style={{ backgroundColor: `${program.color}66` }}
+          className="inline-block px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest text-white mb-8 border border-white/20 backdrop-blur-md"
+          style={{ backgroundColor: `${program.color}CC` }}
         >
           {program.category || program.subtitle}
         </span>
-        <h3 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tight leading-none mb-6 italic">
-          {program.title.split(' ').slice(0, 2).join(' ')}{' '}
+        <h3 className="text-4xl font-black text-white uppercase tracking-tighter leading-[0.9] mb-10 italic">
+          {program.title.split(' ').slice(0, -1).join(' ')} <br/>
           <span style={{ color: program.color }}>
-            {program.title.split(' ').slice(2).join(' ')}
+            {program.title.split(' ').slice(-1)[0]}
           </span>
         </h3>
 
-        <ul className="space-y-3">
-          {(program.features || program.cardFeatures || []).map((f, i) => (
+        <ul className="space-y-4">
+          {(program.cardFeatures || []).map((f, i) => (
             <li key={i} className="flex items-center gap-3">
-              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: program.color }} />
-              <span className="text-[10px] font-bold text-gray-300 uppercase tracking-wide">
-                {typeof f === 'string' ? f : f.label}
+              <div className="w-5 h-5 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-sm border border-white/20">
+                <CheckCircle2 size={12} style={{ color: program.color }} />
+              </div>
+              <span className="text-[10px] font-bold text-gray-200 uppercase tracking-wider">
+                {f}
               </span>
             </li>
           ))}
@@ -61,9 +69,9 @@ const VerticalProgramCard = ({ program, onProgramClick }) => (
 
       <button
         style={{ backgroundColor: program.color }}
-        className="w-full h-14 rounded-xl font-bold uppercase tracking-widest text-[10px] text-black flex items-center justify-center gap-3 hover:brightness-110 transition-all active:scale-95 shadow-xl italic"
+        className="w-full h-16 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] text-white flex items-center justify-center gap-3 hover:brightness-110 transition-all active:scale-95 shadow-2xl italic"
       >
-        Explore Protocol <ArrowRight size={16} />
+        {program.cta} <ChevronRight size={18} />
       </button>
     </div>
   </motion.div>
@@ -81,81 +89,23 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-brand-navy font-sans overflow-x-hidden selection:bg-brand-orange selection:text-white tactical-grid">
+    <div className="min-h-screen bg-gray-50 font-sans overflow-x-hidden selection:bg-brand-orange selection:text-white">
 
-      {/* ── 3. HERO CAROUSEL ── */}
-      <section className="max-w-[1800px] mx-auto px-6 md:px-10 pt-10 pb-10">
+      {/* ── 3. HERO CINEMATIC SLIDER (Image 1 Style) ── */}
+      <section className="max-w-[1800px] mx-auto px-6 md:px-10 pt-10 pb-16">
         <HeroSlider banners={HERO_BANNERS} onProgramClick={handleProgramClick} />
       </section>
 
-      {/* ── 4. FEATURES STRIP ── */}
+
+      {/* ── 3c. HERO PROTOCOL CARDS (Trending Section) ── */}
       <section className="max-w-[1800px] mx-auto px-6 md:px-10 pb-16">
-        <div className="bg-brand-navy-light/50 backdrop-blur-3xl rounded-[2.5rem] border border-white/5 py-10 px-10 grid grid-cols-2 md:grid-cols-5 gap-8 shadow-2xl">
-          {[
-            { label: 'AI PERSONALIZATION', sub: 'Adaptive Neural Engine', icon: Cpu, color: 'text-brand-blue', bg: 'bg-brand-blue/10' },
-            { label: 'EXPERT COMMAND', sub: 'Elite Performance Leads', icon: Users, color: 'text-brand-lime', bg: 'bg-brand-lime/10' },
-            { label: 'FUEL MATRIX', sub: 'Bio-Metric Optimization', icon: Utensils, color: 'text-brand-orange', bg: 'bg-brand-orange/10' },
-            { label: 'REAL OUTPUT', sub: 'Proven Success Metrics', icon: Trophy, color: 'text-brand-blue', bg: 'bg-brand-blue/10' },
-            { label: 'ELITE SECURITY', sub: 'Encrypted Progress Data', icon: ShieldCheck, color: 'text-brand-lime', bg: 'bg-brand-lime/10' },
-          ].map((f, i) => (
-            <div key={i} className="flex flex-col md:flex-row items-center md:items-start gap-4 text-center md:text-left group cursor-default">
-              <div className={`w-12 h-12 ${f.bg} ${f.color} rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-all border border-white/5`}>
-                <f.icon size={22} />
-              </div>
-              <div className="space-y-1">
-                <p className="text-[10px] font-bold text-white uppercase tracking-wider leading-none">{f.label}</p>
-                <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest leading-tight">{f.sub}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── 5. STATS STRIP ── */}
-      <section className="max-w-[1800px] mx-auto px-6 md:px-10 pb-20">
-        <div className="bg-brand-navy-light rounded-[2.5rem] border border-white/5 py-12 px-10 flex flex-wrap justify-around items-center gap-10 shadow-2xl">
-          {[
-            { val: '250K+', label: 'Athletes Active', icon: Flame, color: 'text-brand-orange' },
-            { val: '98%', label: 'Sync Success', icon: TrendingUp, color: 'text-brand-blue' },
-            { val: '150+', label: 'Prime Coaches', icon: Trophy, color: 'text-brand-lime' },
-            { val: '500+', label: 'Protocols', icon: Dumbbell, color: 'text-white' },
-            { val: '4.9/5', label: 'Matrix Rating', icon: Heart, color: 'text-brand-orange' },
-          ].map((s, i) => (
-            <div key={i} className="flex items-center gap-5 min-w-[160px] group">
-              <s.icon size={36} className={`${s.color} transition-transform group-hover:scale-110`} />
-              <div className="space-y-1">
-                <p className="text-3xl font-black text-white tracking-tighter leading-none italic uppercase">{s.val}</p>
-                <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">{s.label}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── 6. POPULAR PROTOCOLS ── */}
-      <section className="max-w-[1800px] mx-auto px-6 md:px-10 pb-24">
-        <div className="flex items-end justify-between mb-12">
-          <div className="space-y-2">
-             <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-brand-orange" />
-                <span className="text-[10px] font-bold text-brand-orange uppercase tracking-widest">Trending Matrix</span>
-             </div>
-             <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter italic">
-                POPULAR <span className="text-brand-orange">PROTOCOLS</span>
-             </h2>
-          </div>
-          <button className="text-[10px] font-bold uppercase tracking-widest text-gray-500 hover:text-white flex items-center gap-3 transition-all italic border-b border-white/5 pb-2">
-            SCAN ALL PROTOCOLS <ChevronRight size={14} />
-          </button>
-        </div>
-
         <div className="relative group/slider">
           <Swiper
-            modules={[Navigation, Autoplay]}
+            modules={[Navigation, Autoplay, Pagination]}
             spaceBetween={24}
             slidesPerView={1}
-            navigation={{ nextEl: '.proto-next', prevEl: '.proto-prev' }}
-            autoplay={{ delay: 6000 }}
+            pagination={{ clickable: true, el: '.proto-pagination' }}
+            autoplay={{ delay: 4000 }}
             breakpoints={{
               640: { slidesPerView: 2 },
               1024: { slidesPerView: 3 },
@@ -169,73 +119,206 @@ const LandingPage = () => {
               </SwiperSlide>
             ))}
           </Swiper>
-
-          <button className="proto-prev absolute -left-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 bg-brand-navy-light border border-white/10 shadow-2xl rounded-xl flex items-center justify-center text-white hover:bg-brand-orange hover:border-brand-orange transition-all opacity-0 group-hover/slider:opacity-100">
-            <ChevronLeft size={24} />
-          </button>
-          <button className="proto-next absolute -right-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 bg-brand-navy-light border border-white/10 shadow-2xl rounded-xl flex items-center justify-center text-white hover:bg-brand-orange hover:border-brand-orange transition-all opacity-0 group-hover/slider:opacity-100">
-            <ChevronRight size={24} />
-          </button>
+          <div className="proto-pagination mt-10 flex justify-center gap-2" />
         </div>
       </section>
 
-      {/* ── 9. AI RECOMMENDATION ── */}
+      {/* ── 4. FEATURES STRIP ── */}
+      <section className="max-w-[1800px] mx-auto px-6 md:px-10 pb-16">
+        <div className="bg-white rounded-[2.5rem] border border-gray-100 py-10 px-10 grid grid-cols-2 md:grid-cols-5 gap-8 shadow-xl">
+          {[
+            { label: 'AI PERSONALIZATION', sub: 'Adaptive Neural Engine', icon: Cpu, color: 'text-brand-blue', bg: 'bg-brand-blue/5' },
+            { label: 'EXPERT COACHES', sub: 'Elite Performance Leads', icon: Users, color: 'text-brand-lime', bg: 'bg-brand-lime/5' },
+            { label: 'NUTRITION TRACKING', sub: 'Bio-Metric Optimization', icon: Utensils, color: 'text-brand-orange', bg: 'bg-brand-orange/5' },
+            { label: 'REAL RESULTS', sub: 'Proven Success Metrics', icon: Trophy, color: 'text-brand-blue', bg: 'bg-brand-blue/5' },
+            { label: 'SAFE & EFFECTIVE', sub: 'Encrypted Progress Data', icon: ShieldCheck, color: 'text-brand-lime', bg: 'bg-brand-lime/5' },
+          ].map((f, i) => (
+            <div key={i} className="flex flex-col md:flex-row items-center md:items-start gap-4 text-center md:text-left group cursor-default">
+              <div className={`w-12 h-12 ${f.bg} ${f.color} rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-all border border-gray-50`}>
+                <f.icon size={22} />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold text-gray-800 uppercase tracking-wider leading-none">{f.label}</p>
+                <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest leading-tight">{f.sub}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── 5. STATS STRIP ── */}
+      <section className="max-w-[1800px] mx-auto px-6 md:px-10 pb-20">
+        <div className="bg-white rounded-[2.5rem] border border-gray-100 py-12 px-10 flex flex-wrap justify-around items-center gap-10 shadow-xl">
+          {[
+            { val: '50K+', label: 'Active Athletes', icon: Users, color: 'text-brand-orange' },
+            { val: '1200+', label: 'Workout Programs', icon: Dumbbell, color: 'text-brand-blue' },
+            { val: '95M+', label: 'Calories Burned', icon: Flame, color: 'text-brand-lime' },
+            { val: '150+', label: 'Expert Trainers', icon: Trophy, color: 'text-brand-blue' },
+            { val: '98%', label: 'Satisfaction Rate', icon: Heart, color: 'text-brand-orange' },
+          ].map((s, i) => (
+            <div key={i} className="flex items-center gap-5 min-w-[160px] group">
+              <s.icon size={36} className={`${s.color} transition-transform group-hover:scale-110`} />
+              <div className="space-y-1">
+                <p className="text-3xl font-black text-brand-navy tracking-tighter leading-none italic uppercase">{s.val}</p>
+                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{s.label}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── 6. TOP PROGRAMS FOR YOU ── */}
+      <section className="max-w-[1800px] mx-auto px-6 md:px-10 pb-24">
+        <div className="flex items-end justify-between mb-12">
+          <div className="space-y-2">
+             <h2 className="text-3xl md:text-4xl font-black text-brand-navy uppercase tracking-tighter italic">
+                TOP <span className="text-brand-orange">PROGRAMS FOR YOU</span>
+             </h2>
+          </div>
+          <button className="text-[10px] font-bold uppercase tracking-widest text-brand-orange hover:text-brand-navy flex items-center gap-3 transition-all italic border-b border-brand-orange/20 pb-2">
+            VIEW ALL PROGRAMS <ChevronRight size={14} />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          {CATEGORIES[0].data.map((p) => (
+            <motion.div
+              key={p.id}
+              whileHover={{ y: -8 }}
+              className="bg-[#0b111b] rounded-2xl overflow-hidden shadow-2xl relative h-72 group cursor-pointer"
+              onClick={() => handleProgramClick(p)}
+            >
+              <img 
+                src={p.image} 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                alt={p.title} 
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.parentElement.style.backgroundColor = '#0b111b';
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+              
+              <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                <span className="inline-block px-3 py-1 bg-brand-blue/80 backdrop-blur-md rounded text-[8px] font-bold text-white mb-3 self-start">
+                  {p.category}
+                </span>
+                <h4 className="text-lg font-black text-white italic uppercase tracking-tight leading-tight mb-3">
+                  {p.title}
+                </h4>
+                <div className="flex items-center justify-between">
+                   <div className="flex items-center gap-1.5">
+                      <Star size={10} className="text-brand-orange fill-brand-orange" />
+                      <span className="text-[9px] font-black text-white">{p.rating}</span>
+                   </div>
+                   <div className="flex items-center gap-4 text-[8px] font-bold text-gray-400 uppercase tracking-widest">
+                      <span>{p.duration}</span>
+                      <span>{p.level}</span>
+                   </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── 9. AI RECOMMENDATION (Image 2 Style) ── */}
       <section className="max-w-[1800px] mx-auto px-6 md:px-10 pb-32">
-        <div className="bg-brand-navy-light rounded-[3rem] p-12 md:p-20 relative overflow-hidden shadow-2xl border border-white/5 flex flex-col xl:flex-row justify-between items-center gap-16">
-          <div className="absolute top-0 right-0 w-[600px] h-full bg-[radial-gradient(circle_at_70%_50%,rgba(255,95,4,0.1),transparent_60%)] pointer-events-none" />
+        <div className="bg-[#0b111b] rounded-[3rem] p-12 md:p-16 relative overflow-hidden shadow-2xl border border-white/5 flex flex-col xl:flex-row justify-between items-center gap-16">
+          <div className="absolute top-0 right-0 w-[600px] h-full bg-[radial-gradient(circle_at_70%_50%,rgba(255,95,4,0.15),transparent_60%)] pointer-events-none" />
           
           <div className="relative z-10 space-y-8 flex-1 text-center xl:text-left">
-            <div className="flex items-center justify-center xl:justify-start gap-3">
-               <Cpu size={20} className="text-brand-orange" />
-               <p className="text-brand-orange text-[10px] font-bold uppercase tracking-widest italic">Neural Engine Analysis</p>
-            </div>
-            <h2 className="text-5xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none italic">
-              CALIBRATE YOUR <br /> <span className="text-brand-orange">PERFORMANCE.</span>
+            <p className="text-brand-orange text-[10px] font-black uppercase tracking-[0.4em] italic">AI RECOMMENDATION</p>
+            <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter leading-tight italic">
+              Get Personalized <br /> <span className="text-brand-orange">Protocol For You</span>
             </h2>
-            <p className="text-gray-500 text-base font-bold max-w-lg leading-relaxed mx-auto xl:mx-0">
-              Our proprietary AI matrix decrypts your biometric stream to engineer a protocol tailored exclusively for your neural architecture.
+            <p className="text-gray-400 text-sm font-bold max-w-lg leading-relaxed mx-auto xl:mx-0 uppercase tracking-wide opacity-60">
+              Our AI analyzes your goals, fitness level, and lifestyle to recommend the best protocol for maximum results.
             </p>
-            <button className="h-16 px-10 bg-brand-orange text-white font-bold uppercase tracking-widest text-xs rounded-xl hover:brightness-110 transition-all shadow-orange-glow italic">
-              START NEURAL SYNC
+            
+            <div className="flex flex-wrap items-center justify-center xl:justify-start gap-10 pt-4">
+               {[
+                 { label: 'Analyze', sub: 'Your Data', icon: Search, color: 'bg-purple-500' },
+                 { label: 'Recommend', sub: 'Best Protocol', icon: Target, color: 'bg-brand-orange' },
+                 { label: 'Track', sub: 'Your Progress', icon: TrendingUp, color: 'bg-brand-blue' },
+                 { label: 'Achieve', sub: 'Your Goals', icon: Trophy, color: 'bg-red-500' },
+               ].map((step, i) => (
+                 <div key={i} className="flex items-center gap-4 group">
+                    <div className={`w-10 h-10 rounded-xl ${step.color} flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform`}>
+                       <step.icon size={18} />
+                    </div>
+                    <div className="text-left">
+                       <p className="text-[10px] font-black text-white uppercase leading-none mb-1">{step.label}</p>
+                       <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">{step.sub}</p>
+                    </div>
+                 </div>
+               ))}
+            </div>
+
+            <button className="h-14 px-10 bg-brand-orange text-white font-black uppercase tracking-[0.2em] text-[10px] rounded-xl hover:brightness-110 transition-all shadow-orange-glow italic">
+              Get My Protocol
             </button>
           </div>
 
-          <div className="relative z-10 flex-1 w-full grid grid-cols-2 gap-4">
-            {[
-              { label: 'DECRYPT', sub: 'Bio-Metric Scan', icon: Search, color: 'text-brand-blue' },
-              { label: 'ENGINEER', sub: 'Protocol Synthesis', icon: Target, color: 'text-brand-lime' },
-              { label: 'MONITOR', sub: 'Real-time Analytics', icon: Activity, color: 'text-brand-orange' },
-              { label: 'EVOLVE', sub: 'Elite Ascension', icon: Trophy, color: 'text-white' },
-            ].map((f, i) => (
-              <div 
-                key={i} 
-                className="bg-white/5 backdrop-blur-xl border border-white/5 rounded-[2rem] p-8 flex flex-col items-center text-center hover:bg-white/10 transition-all group"
-              >
-                <div className={`w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-6 ${f.color} border border-white/5 group-hover:scale-110 transition-transform`}>
-                  <f.icon size={24} />
-                </div>
-                <p className="text-[12px] font-black text-white uppercase tracking-widest mb-1 italic">{f.label}</p>
-                <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">{f.sub}</p>
-              </div>
-            ))}
+          <div className="relative z-10 flex-shrink-0 w-full max-w-sm hidden xl:block">
+             <div className="relative group">
+                <div className="absolute -inset-4 bg-brand-orange/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                <img 
+                  src="https://images.unsplash.com/photo-1510017803434-a899398421b3?q=80&w=2070&auto=format&fit=crop" 
+                  className="w-full h-auto rounded-[3rem] shadow-2xl border-4 border-white/5 rotate-6 group-hover:rotate-0 transition-transform duration-1000" 
+                  alt="Protocol App" 
+                />
+             </div>
           </div>
         </div>
       </section>
 
-      {/* ── 11. BOTTOM HERO IMAGE ── */}
+      {/* ── 11. FULL HD VIDEO SHOWCASE ── */}
       <section className="max-w-[1800px] mx-auto px-6 md:px-10 pb-32">
         <motion.div 
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 60 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 1 }}
-          className="rounded-[3rem] overflow-hidden shadow-2xl border border-white/5"
+          transition={{ duration: 1.2 }}
+          className="relative w-full rounded-[3rem] overflow-hidden border-4 border-white/10 shadow-[0_0_120px_rgba(255,95,4,0.2)]"
+          style={{ height: '720px' }}
         >
-          <img 
-            src={LandingBottom} 
-            alt="Performance Excellence" 
-            className="w-full h-auto object-cover hover:scale-105 transition-transform duration-[3s]" 
-          />
+          {/* Full HD Video */}
+          <video 
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
+            autoPlay
+            muted
+            loop
+            playsInline
+          >
+            <source src="/100545-video-360.mp4" type="video/mp4" />
+          </video>
+
+          {/* Dark Cinematic Gradient */}
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.6) 0%, transparent 60%)', pointerEvents: 'none' }} />
+
+          {/* Top Live Badge */}
+          <div style={{ position: 'absolute', top: '2.5rem', left: '2.5rem', zIndex: 10, display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 1.5rem', background: 'rgba(255,95,4,0.9)', backdropFilter: 'blur(12px)', borderRadius: '9999px', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'white', animation: 'ping 1s cubic-bezier(0,0,0.2,1) infinite' }} />
+            <span style={{ color: 'white', fontSize: '10px', fontWeight: 900, letterSpacing: '0.3em', fontStyle: 'italic', textTransform: 'uppercase' }}>VITAMAX LIVE HD</span>
+          </div>
+
+          {/* Bottom Branding */}
+          <div style={{ position: 'absolute', bottom: '3rem', left: '3rem', zIndex: 10 }}>
+            <p style={{ color: '#FF5F04', fontSize: '11px', fontWeight: 900, letterSpacing: '0.4em', fontStyle: 'italic', textTransform: 'uppercase', marginBottom: '1rem' }}>ELITE PERFORMANCE PROTOCOL</p>
+            <h2 style={{ color: 'white', fontSize: '64px', fontWeight: 900, letterSpacing: '-2px', fontStyle: 'italic', textTransform: 'uppercase', lineHeight: 1, marginBottom: '1.5rem' }}>
+              TRAIN LIKE<br /><span style={{ color: '#FF5F04' }}>A CHAMPION</span>
+            </h2>
+            <div style={{ display: 'flex', gap: '2rem' }}>
+              {[{ label: '50K+', sub: 'Athletes' }, { label: '97%', sub: 'Success Rate' }, { label: '6 Wks', sub: 'Avg. Transform' }].map((stat) => (
+                <div key={stat.label} style={{ textAlign: 'center' }}>
+                  <p style={{ color: 'white', fontSize: '28px', fontWeight: 900, fontStyle: 'italic', lineHeight: 1 }}>{stat.label}</p>
+                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '9px', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', marginTop: '4px' }}>{stat.sub}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </motion.div>
       </section>
 

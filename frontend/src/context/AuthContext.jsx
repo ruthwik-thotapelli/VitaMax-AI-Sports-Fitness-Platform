@@ -9,6 +9,19 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      // Check for OAuth token in URL
+      const params = new URLSearchParams(window.location.search);
+      const urlToken = params.get('token');
+      const error = params.get('error');
+
+      if (urlToken) {
+        localStorage.setItem('token', urlToken);
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } else if (error) {
+        console.error('OAuth Error:', error);
+      }
+
       const token = localStorage.getItem('token');
       if (token) {
         try {
@@ -32,9 +45,11 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     const { data } = await API.post('/register', userData);
-    localStorage.setItem('token', data.access_token);
-    setUser(data.user);
     return data;
+  };
+
+  const socialLogin = (provider) => {
+    window.location.href = `http://localhost:8000/api/oauth/${provider}`;
   };
 
   const logout = async () => {
@@ -47,7 +62,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, socialLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );
