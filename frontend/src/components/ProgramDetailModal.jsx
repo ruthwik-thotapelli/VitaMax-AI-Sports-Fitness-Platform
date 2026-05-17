@@ -1,9 +1,75 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle, Heart, Share2, Dumbbell, Utensils, Zap, Clock, User, BarChart, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import API from '../api';
+import { 
+  X, CheckCircle, Heart, Share2, Dumbbell, Utensils, 
+  Zap, Clock, User, BarChart, ChevronRight, Loader2, CheckCircle2 
+} from 'lucide-react';
 
 const ProgramDetailModal = ({ isOpen, onClose, program }) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+
   if (!isOpen || !program) return null;
+
+  const handleInitialize = async () => {
+    if (!user) {
+      navigate('/login', { state: { message: 'Authentication required. Please sign in to initialize this training protocol.' } });
+      onClose();
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    const isNutrition = program.category?.toLowerCase() === 'nutrition' || 
+                        program.subtitle?.toLowerCase() === 'nutrition' || 
+                        program.title?.toLowerCase().includes('diet') || 
+                        program.title?.toLowerCase().includes('nutrition');
+
+    try {
+      if (isNutrition) {
+        // Generate Nutrition plan
+        await API.post('/nutrition/generate', { 
+          weight: 75, 
+          goal: program.title, 
+          dietary_preference: 'None' 
+        });
+      } else {
+        // Generate Workout plan
+        await API.post('/workouts/generate', { 
+          age: 25, 
+          weight: 75, 
+          height: 180, 
+          goal: program.title, 
+          fitness_level: program.difficulty || 'Intermediate', 
+          sport_interest: 'General Fitness' 
+        });
+      }
+
+      setSuccess(true);
+      setTimeout(() => {
+        onClose();
+        // Redirect to respective pages
+        if (isNutrition) {
+          navigate('/nutrition');
+        } else {
+          navigate('/workouts');
+        }
+      }, 2000);
+    } catch (err) {
+      console.error(err);
+      setError(err?.response?.data?.message || 'Neural Link interrupted. Failed to deploy protocol.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -136,9 +202,35 @@ const ProgramDetailModal = ({ isOpen, onClose, program }) => {
                </div>
 
                {/* Actions */}
-               <section className="flex flex-col sm:flex-row items-center gap-6 pt-6 border-t border-gray-100">
-                  <button className="btn-navy w-full sm:flex-1 !h-20 text-lg group">
-                     <CheckCircle size={24} className="text-brand-lime" /> INITIALIZE PROGRAM
+               <section className="flex flex-col sm:flex-row items-center gap-6 pt-6 border-t border-gray-100 relative">
+                  {error && (
+                    <div className="absolute -top-12 left-0 right-0 text-center">
+                      <p className="text-red-500 text-xs font-bold uppercase tracking-widest">{error}</p>
+                    </div>
+                  )}
+                  <button 
+                    onClick={handleInitialize}
+                    disabled={loading || success}
+                    className={`btn-navy w-full sm:flex-1 !h-20 text-lg group transition-all flex items-center justify-center gap-3 ${
+                      success ? '!bg-brand-lime hover:!bg-brand-lime !text-brand-navy shadow-[0_0_30px_rgba(215,255,0,0.4)]' : ''
+                    }`}
+                  >
+                     {loading ? (
+                       <>
+                         <Loader2 size={24} className="animate-spin text-white" />
+                         DEPLOYING NEURAL LINK...
+                       </>
+                     ) : success ? (
+                       <>
+                         <CheckCircle2 size={24} className="text-brand-navy animate-bounce" />
+                         PROTOCOL CALIBRATED! REDIRECTING...
+                       </>
+                     ) : (
+                       <>
+                         <CheckCircle size={24} className="text-brand-lime group-hover:scale-110 transition-transform" />
+                         INITIALIZE PROGRAM
+                       </>
+                     )}
                   </button>
                   <div className="flex items-center gap-4">
                      <button className="w-20 h-20 bg-gray-50 hover:bg-brand-orange/5 text-gray-400 hover:text-brand-orange rounded-3xl border border-gray-100 flex items-center justify-center transition-all">

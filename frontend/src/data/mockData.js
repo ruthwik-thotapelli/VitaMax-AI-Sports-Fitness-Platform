@@ -5,7 +5,7 @@ export const HERO_BANNERS = [
     subtitle: "AI POWERED",
     category: "AI POWERED",
     description: "Smart workouts. Personalized nutrition. 6-week transformation program.",
-    image: "https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&w=1600&v=2",
+    image: "/ai_muscle_builder_banner.png",
     color: "#FF5F04",
     cta: "Start Muscle Plan",
     features: [
@@ -92,7 +92,7 @@ export const CATEGORIES = [
     title: "Top Programs For You",
     data: [
       { id: 101, title: "Beast Mode Training", category: "Strength", image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1000&q=75", rating: 4.8, duration: "6 Weeks", level: "Intermediate", color: "#FF5F04" },
-      { id: 102, title: "AI Muscle Builder", category: "Strength", image: "https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&w=1000", rating: 4.9, duration: "8 Weeks", level: "Advanced", color: "#FF5F04" },
+      { id: 102, title: "AI Muscle Builder", category: "Strength", image: "/ai_muscle_builder_banner.png", rating: 4.9, duration: "8 Weeks", level: "Advanced", color: "#FF5F04" },
       { id: 103, title: "Elite Fat Burn", category: "Cardio", image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1000&q=75", rating: 4.8, duration: "4 Weeks", level: "Beginner", color: "#D7FF00" },
       { id: 104, title: "Neural HIIT Engine", category: "Cardio", image: "https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=1000&q=75", rating: 4.7, duration: "4 Weeks", level: "Intermediate", color: "#2E5BFF" },
       { id: 105, title: "Pro Conditioning Matrix", category: "Endurance", image: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=1000&q=75", rating: 4.9, duration: "12 Weeks", level: "Elite", color: "#2E5BFF" },

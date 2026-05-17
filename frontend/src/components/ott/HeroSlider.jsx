@@ -26,7 +26,7 @@ const IconMap = {
 // Image 1 style: Full-width cinematic hero with left text + right image + stats box
 const HeroSlider = ({ banners, onProgramClick }) => {
   return (
-    <div className="relative group overflow-hidden rounded-[2.5rem] shadow-2xl border border-gray-100 bg-[#0f1923]">
+    <div className="relative group overflow-hidden rounded-[2.5rem] shadow-2xl bg-[#0f1923]">
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
         effect="fade"

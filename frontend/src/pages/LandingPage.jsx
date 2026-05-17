@@ -22,7 +22,7 @@ import 'swiper/css/pagination';
 const VerticalProgramCard = ({ program, onProgramClick }) => (
   <motion.div
     whileHover={{ y: -15, scale: 1.02 }}
-    className="relative rounded-[2.5rem] overflow-hidden cursor-pointer flex-shrink-0 h-[600px] w-full shadow-2xl group border border-gray-100"
+    className="relative rounded-[2.5rem] overflow-hidden cursor-pointer flex-shrink-0 h-[600px] w-full shadow-2xl group"
     onClick={() => onProgramClick(program)}
   >
     <div className="absolute inset-0 bg-[#0b111b]">
@@ -92,10 +92,9 @@ const LandingPage = () => {
     <div className="min-h-screen bg-gray-50 font-sans overflow-x-hidden selection:bg-brand-orange selection:text-white">
 
       {/* ── 3. HERO CINEMATIC SLIDER (Image 1 Style) ── */}
-      <section className="max-w-[1800px] mx-auto px-6 md:px-10 pt-10 pb-16">
+      <section className="max-w-[1800px] mx-auto px-6 md:px-10 pt-6 pb-12">
         <HeroSlider banners={HERO_BANNERS} onProgramClick={handleProgramClick} />
       </section>
-
 
       {/* ── 3c. HERO PROTOCOL CARDS (Trending Section) ── */}
       <section className="max-w-[1800px] mx-auto px-6 md:px-10 pb-16">
@@ -255,7 +254,10 @@ const LandingPage = () => {
                ))}
             </div>
 
-            <button className="h-14 px-10 bg-brand-orange text-white font-black uppercase tracking-[0.2em] text-[10px] rounded-xl hover:brightness-110 transition-all shadow-orange-glow italic">
+            <button 
+              onClick={() => handleProgramClick(HERO_BANNERS[0])}
+              className="h-14 px-10 bg-brand-orange text-white font-black uppercase tracking-[0.2em] text-[10px] rounded-xl hover:brightness-110 transition-all shadow-orange-glow italic"
+            >
               Get My Protocol
             </button>
           </div>
@@ -274,7 +276,38 @@ const LandingPage = () => {
       </section>
 
       {/* ── 11. FULL HD VIDEO SHOWCASE ── */}
-      <section className="max-w-[1800px] mx-auto px-6 md:px-10 pb-32">
+      <section className="max-w-[1800px] mx-auto px-6 md:px-10 pb-32 scroll-mt-28 pt-12">
+        {/* Cinematic Section Heading inside White Space */}
+        <div className="text-center mb-16 space-y-4">
+          <motion.p 
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-brand-orange text-[10px] font-black uppercase tracking-[0.4em] italic"
+          >
+            Cinematic Broadcast Arena
+          </motion.p>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-4xl md:text-5xl lg:text-6xl font-black text-brand-navy uppercase tracking-tighter leading-tight italic"
+          >
+            TRAIN WITH THE <span className="text-brand-orange">WORLD'S BEST ATHLETES</span>
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-gray-400 text-xs font-bold max-w-2xl mx-auto uppercase tracking-wider opacity-75"
+          >
+            Step into our immersive broadcast vault. Real-time elite athlete streaming, premium interactive bootcamps, and next-generation fitness tracking synchronized.
+          </motion.p>
+        </div>
+
         <motion.div 
           initial={{ opacity: 0, y: 60 }}
           whileInView={{ opacity: 1, y: 0 }}

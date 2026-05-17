@@ -231,7 +231,7 @@ function App() {
       ) : (
         <div className="min-h-screen bg-brand-navy tactical-grid">
           {!['/login', '/register', '/admin/login', '/admin/register'].includes(location.pathname) && <Navbar light={!user && location.pathname === '/'} />}
-          <div className={!['/login', '/register', '/admin/login', '/admin/register'].includes(location.pathname) ? "pt-24" : ""}>
+          <div className={!['/login', '/register', '/admin/login', '/admin/register'].includes(location.pathname) ? "pt-20" : ""}>
             <Routes>
             <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
             <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
